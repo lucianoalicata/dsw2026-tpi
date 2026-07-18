@@ -27,12 +27,12 @@ namespace Dsw2026Tpi.Domain.Entities
             TimeOnly startTime, TimeOnly endTime, Guid? id = null) : base(id)
         {
             DoctorId = doctorId;
-            AvailabilityRuleId = availabilityRuleId;
-            SlotDate = slotDate;
-            StartTime = startTime;
-            EndTime = endTime;
-            Status = SlotStatus.Available;
-            Deleted = false;
+            AvailabilityRuleId=availabilityRuleId;
+            SlotDate=slotDate;
+            StartTime=startTime;
+            EndTime=endTime;
+            Status=SlotStatus.Available;
+            Deleted=false;
         }
 
         public void Book()
@@ -48,9 +48,7 @@ namespace Dsw2026Tpi.Domain.Entities
             Status = SlotStatus.Available;
         }
 
-        public void SoftDelete()
-        {
-            Deleted = true;
-        }
+        public void SoftDelete() =>Deleted = true;
+        
     }
 }

@@ -13,9 +13,10 @@ namespace Dsw2026Tpi.Domain.Entities
         public int DayOfWeek { get; init; }
         public TimeOnly StartTime { get; init; }
         public TimeOnly EndTime { get; init; }
+        public bool Deleted { get; private set; }
 
         #region Constructor for EF
-        #pragma warning disable CS8618
+#pragma warning disable CS8618
         private AvailabilityRule(){}
         #pragma warning restore CS8618
         #endregion
@@ -29,6 +30,8 @@ namespace Dsw2026Tpi.Domain.Entities
             DayOfWeek = dayOfWeek;
             StartTime = startTime;
             EndTime = endTime;
+            Deleted = false;
         }
+        public void SoftDelete() => Deleted = true;
     }
 }
