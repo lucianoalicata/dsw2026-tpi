@@ -17,7 +17,11 @@ namespace Dsw2026Tpi.Domain.Entities
         public DateTime? AttendedAt { get; private set; }
         public byte[]? RowVersion { get; set; }
 
+        #region Constructor for EF
+        #pragma warning disable CS8618
         private Appointment(){}
+        #pragma warning restore CS8618
+        #endregion
 
         public Appointment(Guid availabilitySlotId, Guid patientId, string reason, Guid? id = null) : base(id)
         {
