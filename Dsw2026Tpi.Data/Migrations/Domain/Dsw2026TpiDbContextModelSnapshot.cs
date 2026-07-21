@@ -22,6 +22,55 @@ namespace Dsw2026Tpi.Data.Migrations.Domain
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Appointment", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("AttendedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("AvailabilitySlotId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime?>("CancelledAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("PatientId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Reason")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<byte[]>("RowVersion")
+                        .IsConcurrencyToken()
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("rowversion");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("nvarchar(20)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AvailabilitySlotId")
+                        .IsUnique()
+                        .HasFilter("[Status] = 'Booked'");
+
+                    b.HasIndex("PatientId");
+
+                    b.ToTable("Appointments", (string)null);
+                });
+
             modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.AvailabilityRule", b =>
                 {
                     b.Property<Guid>("Id")
@@ -141,6 +190,43 @@ namespace Dsw2026Tpi.Data.Migrations.Domain
                     b.ToTable("Doctors", (string)null);
                 });
 
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Patient", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Dni")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FullName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Phone")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Dni")
+                        .IsUnique();
+
+                    b.ToTable("Patients", (string)null);
+                });
+
             modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Speciality", b =>
                 {
                     b.Property<Guid>("Id")
@@ -164,6 +250,25 @@ namespace Dsw2026Tpi.Data.Migrations.Domain
                     b.HasKey("Id");
 
                     b.ToTable("Specialities", (string)null);
+                });
+
+            modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.Appointment", b =>
+                {
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.AvailabilitySlot", "AvailabilitySlot")
+                        .WithMany()
+                        .HasForeignKey("AvailabilitySlotId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Dsw2026Tpi.Domain.Entities.Patient", "Patient")
+                        .WithMany()
+                        .HasForeignKey("PatientId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AvailabilitySlot");
+
+                    b.Navigation("Patient");
                 });
 
             modelBuilder.Entity("Dsw2026Tpi.Domain.Entities.AvailabilityRule", b =>
