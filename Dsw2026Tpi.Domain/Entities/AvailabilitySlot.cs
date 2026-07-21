@@ -1,4 +1,5 @@
 ﻿using Dsw2026Tpi.CrossCutting.Exceptions;
+using Dsw2026Tpi.CrossCutting.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -38,7 +39,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public void Book()
         {
             if (Status != SlotStatus.Available)
-                throw new ConflictException("APPOINTMENT_CONFLICT", "El turno ya se encuentra reservado.");
+                throw new ConflictException(nameof(ErrorCodes.APPOINTMENT_CONFLICT), ErrorCodes.APPOINTMENT_CONFLICT);
 
             Status = SlotStatus.Booked;
         }

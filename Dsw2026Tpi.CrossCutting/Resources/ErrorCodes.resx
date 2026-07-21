@@ -126,6 +126,9 @@
   <data name="ENTITY_NOTFOUND" xml:space="preserve">
     <value>La entidad {0} no se encontró</value>
   </data>
+  <data name="APPOINTMENT_INVALID_DNI" xml:space="preserve">
+    <value>El DNI debe tener entre 7 y 10 dígitos.</value>
+  </data>
   <data name="REGISTER_USER_CONFLICT" xml:space="preserve">
     <value>Se produjo un error al registrar el usuario</value>
   </data>
@@ -137,5 +140,23 @@
   </data>
   <data name="VALIDATION_ERROR" xml:space="preserve">
     <value>Uno o más errores de validación ocurrieron</value>
+  </data>
+  <data name="INVALID_REASON" xml:space="preserve">
+    <value> El motivo es obligatorio y debe tener por lo menos 5 caracteres</value>
+  </data>
+  <data name="SLOT_DOCTOR_MISMATCH" xml:space="preserve">
+    <value>El turno seleccionado no corresponde al médico que se indicó</value>
+  </data>
+  <data name="APPOINTMENT_IN_PAST" xml:space="preserve">
+    <value>No se puede reservar un turno en fechas/horas pasadas</value>
+  </data>
+  <data name="APPOINTMENT_CONFLICT" xml:space="preserve">
+    <value>El turno ya se encuentra reservado</value>
+  </data>
+  <data name="APPOINTMENT_NOT_CANCELLABLE" xml:space="preserve">
+    <value>Solo se puede cancelar una cita que se encuentre en estado 'Reservada'</value>
+  </data>
+  <data name="INVALID_AVAILABILITY_ID" xml:space="preserve">
+    <value>El turno (availabilityId) es obligatorio</value>
   </data>
 </root>

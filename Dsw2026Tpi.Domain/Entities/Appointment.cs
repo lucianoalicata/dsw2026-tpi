@@ -1,4 +1,5 @@
 ﻿using Dsw2026Tpi.CrossCutting.Exceptions;
+using Dsw2026Tpi.CrossCutting.Resources;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -33,7 +34,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public void Cancel()
         {
             if (Status != AppointmentStatus.Booked)
-                throw new ConflictException("APPOINTMENT_NOT_CANCELLABLE", "solo se puede cancelar una cita en estado 'Reservada'");
+                throw new ConflictException(nameof(ErrorCodes.APPOINTMENT_NOT_CANCELLABLE), ErrorCodes.APPOINTMENT_NOT_CANCELLABLE);
 
             Status = AppointmentStatus.Cancelled;
             CancelledAt = DateTime.UtcNow;
