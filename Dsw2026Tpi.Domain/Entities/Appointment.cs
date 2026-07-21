@@ -33,7 +33,7 @@ namespace Dsw2026Tpi.Domain.Entities
         public void Cancel()
         {
             if (Status != AppointmentStatus.Booked)
-                throw new BusinessRuleException("solo se puede cancelar una cita en estado 'Reservada'.", "APPOINTMENT_NOT_CANCELLABLE");
+                throw new ConflictException("APPOINTMENT_NOT_CANCELLABLE", "solo se puede cancelar una cita en estado 'Reservada'");
 
             Status = AppointmentStatus.Cancelled;
             CancelledAt = DateTime.UtcNow;
