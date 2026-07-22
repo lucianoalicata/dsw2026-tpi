@@ -5,16 +5,19 @@ using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace Dsw2026Tpi.Application.Services;
 
-public class AppointmentService :IAppointmentService
+public class AppointmentService : IAppointmentService
 {
     private readonly IPersistence _persistence;
+    private readonly ILogger<AppointmentService> _logger;
 
-    public AppointmentService (IPersistence persistence)
+    public AppointmentService (IPersistence persistence, ILogger<AppointmentService> logger)
     {
         _persistence = persistence;
+        _logger=logger;
     }
 
     public async Task<AppointmentModel.Response> BookAppointment(AppointmentModel.Request request)
@@ -44,8 +47,15 @@ public class AppointmentService :IAppointmentService
         var slotDateTime = slot.SlotDate.ToDateTime(slot.StartTime);
         if (slotDateTime < DateTime.Now)
             throw new ValidationException(ErrorCodes.APPOINTMENT_IN_PAST, nameof(ErrorCodes.APPOINTMENT_IN_PAST));
-
-        slot.Book();
+        try
+        {
+            slot.Book();
+        }
+        catch(ConflictException e)
+        {
+            _logger.LogWarning(e, "intento de reserva sobre un turno ya no disponible. DNI {Dni}.", request.Patient.Dni);throw;
+        }
+        
         var appointment = new Appointment(slot.Id, patient.Id, request.Reason);
 
         try
@@ -53,11 +63,14 @@ public class AppointmentService :IAppointmentService
             await _persistence.Add(appointment);
 
         }
-        catch (DbUpdateException)
+        catch (DbUpdateException e)
         {
+            _logger.LogWarning(e, "ocurrió un conflicto de concurrencia al reservar turno para el DNI {Dni}.", request.Patient.Dni);
             throw new ConflictException(nameof(ErrorCodes.APPOINTMENT_CONFLICT), ErrorCodes.APPOINTMENT_CONFLICT);
+
         }
         await _persistence.Update(slot);
+        _logger.LogInformation("el turno {AppointmentId} se reservó exitosamente para el DNI {Dni}", appointment.Id, request.Patient.Dni);
         return MapToResponse(appointment, slot, doctor);
     }
 
@@ -68,11 +81,21 @@ public class AppointmentService :IAppointmentService
                 $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Speciality)}") ?? 
                 throw new EntityNotFoundException(nameof(Appointment));
 
-        appointment.Cancel();                         
+        try
+        {
+            appointment.Cancel();
+        }catch(ConflictException e)
+        {
+            _logger.LogWarning(e, "intento de cancelar un turno que no está en estado 'Reservada'. Cita: {AppointmentId}.", id);throw;
+        }
+                                
         appointment.AvailabilitySlot!.Release();
 
         await _persistence.Update(appointment);
         await _persistence.Update(appointment.AvailabilitySlot);
+
+        _logger.LogInformation("el turno {AppointmentId} se canceló exitosamente", id);
+
         return MapToResponse(appointment, appointment.AvailabilitySlot, appointment.AvailabilitySlot.Doctor!);
     }
 
@@ -115,7 +138,7 @@ public class AppointmentService :IAppointmentService
             patientId = patient.Id;
         }
 
-        var result = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
+        var result = await _persistence.Paginate<Appointment, DateOnly> (pageSize, pageIndex,
             a =>(!doctorId.HasValue ||a.AvailabilitySlot!.DoctorId == doctorId) &&
                 (!specialtyId.HasValue || a.AvailabilitySlot!.Doctor!.SpecialityId== specialtyId) &&
                 (!patientId.HasValue || a.PatientId ==patientId) &&
@@ -131,4 +154,3 @@ public class AppointmentService :IAppointmentService
     private static AppointmentModel.Response MapToResponse(Appointment appointment, AvailabilitySlot slot, Doctor doctor)
         =>new( appointment.Id,doctor.Name, doctor.Speciality?.Name ?? string.Empty,slot.SlotDate, slot.StartTime, appointment.Status.ToString());
 }
-
