@@ -115,6 +115,24 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a La matrícula del médico es obligatoria.
+        /// </summary>
+        public static string DOCTOR_INVALID_LICENSE {
+            get {
+                return ResourceManager.GetString("DOCTOR_INVALID_LICENSE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El nombre del médico debe tener al menos 3 caracteres.
+        /// </summary>
+        public static string DOCTOR_INVALID_NAME {
+            get {
+                return ResourceManager.GetString("DOCTOR_INVALID_NAME", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a La entidad {0} no se encontró.
         /// </summary>
         public static string ENTITY_NOTFOUND {
