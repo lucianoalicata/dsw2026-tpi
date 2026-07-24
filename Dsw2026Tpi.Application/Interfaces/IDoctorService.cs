@@ -9,4 +9,5 @@ public interface IDoctorService
     Task<DoctorModel.Response> Add(DoctorModel.Request request);
     Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request request);
     Task Delete(Guid id);
+    Task<IEnumerable<DoctorModel.AvailabilityResponse>> GetAvailabilities(Guid id);
 }

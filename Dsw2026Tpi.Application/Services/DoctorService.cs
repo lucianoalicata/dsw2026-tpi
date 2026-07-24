@@ -18,8 +18,8 @@ public class DoctorService : IDoctorService
 
     public async Task<Pagination<DoctorModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
     {
-        var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => string.IsNullOrWhiteSpace(name) ||
-                                                   d.Name.Contains(name), x => x.Name, nameof(Doctor.Speciality));
+        var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => d.IsActive &&
+                                           (string.IsNullOrWhiteSpace(name) || d.Name.Contains(name)), x => x.Name, nameof(Doctor.Speciality));
 
         return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,
             new DoctorModel.SpecialityDto(d.Speciality?.Id, d.Speciality?.Name)));
@@ -27,7 +27,7 @@ public class DoctorService : IDoctorService
 
     public async Task<DoctorModel.Response> Add(DoctorModel.Request request)
     {
-        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length < 3)
+        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length < 3 || request.Name.Length > 100)
             throw new ValidationException(ErrorCodes.DOCTOR_INVALID_NAME, nameof(ErrorCodes.DOCTOR_INVALID_NAME));
 
         if (string.IsNullOrWhiteSpace(request.LicenseNumber))
@@ -73,6 +73,25 @@ public class DoctorService : IDoctorService
         doctor.Deactivate();
 
         await _persistence.Update(doctor);
+    }
+
+    private static readonly string[] DayNames = { "DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO" };
+
+    public async Task<IEnumerable<DoctorModel.AvailabilityResponse>> GetAvailabilities(Guid id)
+    {
+        var doctor = await _persistence.GetById<Doctor>(id) ??
+            throw new EntityNotFoundException(nameof(Doctor));
+
+        var today = DateTime.UtcNow;
+
+        var rules = await _persistence.GetFiltered<AvailabilityRule>(r =>
+            r.DoctorId == id && !r.Deleted && r.Month == today.Month && r.Year == today.Year);
+
+        return rules?.Select(r => new DoctorModel.AvailabilityResponse(
+            DayNames[r.DayOfWeek],
+            r.StartTime.ToString("HH:mm"),
+            r.EndTime.ToString("HH:mm")))
+            ?? Enumerable.Empty<DoctorModel.AvailabilityResponse>();
     }
 }
 
