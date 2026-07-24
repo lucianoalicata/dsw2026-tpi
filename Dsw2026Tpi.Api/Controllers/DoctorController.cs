@@ -35,4 +35,14 @@ public class DoctorController : AppController
         return Ok(result);
     }
 
+    [HttpPut("{id:guid}")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Update(Guid id, [FromBody] DoctorModel.Request request)
+    {
+        var result = await _service.Update(id, request);
+        return Ok(result);
+    }
+
 }

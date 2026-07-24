@@ -43,4 +43,27 @@ public class DoctorService : IDoctorService
         return new DoctorModel.Response(doctor.Id, doctor.Name, doctor.LicenseNumber,
             new DoctorModel.SpecialityDto(speciality.Id, speciality.Name));
     }
+
+    public async Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request request)
+    {
+        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length < 3)
+            throw new ValidationException(ErrorCodes.DOCTOR_INVALID_NAME, nameof(ErrorCodes.DOCTOR_INVALID_NAME));
+
+        if (string.IsNullOrWhiteSpace(request.LicenseNumber))
+            throw new ValidationException(ErrorCodes.DOCTOR_INVALID_LICENSE, nameof(ErrorCodes.DOCTOR_INVALID_LICENSE));
+
+        var doctor = await _persistence.GetById<Doctor>(id) ??
+            throw new EntityNotFoundException(nameof(Doctor));
+
+        var speciality = await _persistence.GetById<Speciality>(request.SpecialityId) ??
+            throw new EntityNotFoundException(nameof(Speciality));
+
+        doctor.UpdateData(request.Name, request.LicenseNumber, speciality);
+
+        await _persistence.Update(doctor);
+
+        return new DoctorModel.Response(doctor.Id, doctor.Name, doctor.LicenseNumber,
+            new DoctorModel.SpecialityDto(speciality.Id, speciality.Name));
+    }
+
 }
