@@ -46,7 +46,7 @@ public class DoctorService : IDoctorService
 
     public async Task<DoctorModel.Response> Update(Guid id, DoctorModel.Request request)
     {
-        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length < 3)
+        if (string.IsNullOrWhiteSpace(request.Name) || request.Name.Length < 3 || request.Name.Length > 100)
             throw new ValidationException(ErrorCodes.DOCTOR_INVALID_NAME, nameof(ErrorCodes.DOCTOR_INVALID_NAME));
 
         if (string.IsNullOrWhiteSpace(request.LicenseNumber))
@@ -63,7 +63,17 @@ public class DoctorService : IDoctorService
         await _persistence.Update(doctor);
 
         return new DoctorModel.Response(doctor.Id, doctor.Name, doctor.LicenseNumber,
-            new DoctorModel.SpecialityDto(speciality.Id, speciality.Name));
-    }
+            new DoctorModel.SpecialityDto(speciality.Id, speciality.Name)); }
 
+        public async Task Delete(Guid id)
+    {
+        var doctor = await _persistence.GetById<Doctor>(id) ??
+            throw new EntityNotFoundException(nameof(Doctor));
+
+        doctor.Deactivate();
+
+        await _persistence.Update(doctor);
+    }
 }
+
+
