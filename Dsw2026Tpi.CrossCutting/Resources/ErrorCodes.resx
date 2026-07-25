@@ -129,14 +129,12 @@
   <data name="APPOINTMENT_INVALID_DNI" xml:space="preserve">
     <value>El DNI debe tener entre 7 y 10 dígitos.</value>
   </data>
-
-<data name="DOCTOR_INVALID_NAME" xml:space="preserve">
-  <value>El nombre del médico debe tener al menos 3 caracteres</value>
-</data>
-<data name="DOCTOR_INVALID_LICENSE" xml:space="preserve">
-  <value>La matrícula del médico es obligatoria</value>
-</data>
-
+  <data name="DOCTOR_INVALID_NAME" xml:space="preserve">
+    <value>El nombre del médico debe tener al menos 3 caracteres</value>
+  </data>
+  <data name="DOCTOR_INVALID_LICENSE" xml:space="preserve">
+    <value>La matrícula del médico es obligatoria</value>
+  </data>
   <data name="REGISTER_USER_CONFLICT" xml:space="preserve">
     <value>Se produjo un error al registrar el usuario</value>
   </data>
@@ -166,5 +164,14 @@
   </data>
   <data name="INVALID_AVAILABILITY_ID" xml:space="preserve">
     <value>El turno (availabilityId) es obligatorio</value>
+  </data>
+  <data name="SPECIALITY_INVALID_NAME" xml:space="preserve">
+    <value>El nombre de la especialidad debe tener entre 3 y 100 caracteres</value>
+  </data>
+  <data name="SPECIALITY_INVALID_DESCRIPTION" xml:space="preserve">
+    <value>La descripción de la especialidad debe tener entre 10 y 100 caracteres</value>
+  </data>
+  <data name="SPECIALITY_NAME_TAKEN" xml:space="preserve">
+    <value>Ya existe una especialidad con ese nombre</value>
   </data>
 </root>
