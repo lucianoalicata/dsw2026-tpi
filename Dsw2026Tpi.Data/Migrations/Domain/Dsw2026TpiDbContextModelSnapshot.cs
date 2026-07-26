@@ -253,7 +253,8 @@ namespace Dsw2026Tpi.Data.Migrations.Domain
                     b.HasKey("Id");
 
                     b.HasIndex("Name")
-                        .IsUnique();
+                        .IsUnique()
+                        .HasFilter("[IsActive] = 1");
 
                     b.ToTable("Specialities", (string)null);
                 });

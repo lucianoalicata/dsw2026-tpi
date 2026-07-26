@@ -29,7 +29,8 @@ namespace Dsw2026Tpi.Data.Migrations.Domain
                 name: "IX_Specialities_Name",
                 table: "Specialities",
                 column: "Name",
-                unique: true);
+                unique: true,
+                filter: "[IsActive] = 1");
         }
 
         /// <inheritdoc />
