@@ -9,5 +9,8 @@ public class SpecialityConfiguration : IEntityTypeConfiguration<Speciality>
     public void Configure(EntityTypeBuilder<Speciality> builder)
     {
         builder.ToTable("Specialities");
+        builder.HasIndex(s => s.Name)
+            .IsUnique()
+            .HasFilter("[IsActive] = 1");
     }
 }
