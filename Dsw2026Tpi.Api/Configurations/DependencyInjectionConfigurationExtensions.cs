@@ -12,6 +12,7 @@ public static class DependencyInjectionConfigurationExtensions
     {
         services.AddScoped<IPersistence, PersistenceEf>();
         services.AddScoped<IDoctorService, DoctorService>();
+        services.AddScoped<IAvailabilityService, AvailabilityService>();
         services.AddScoped<ISpecialityService, SpecialityService>();
         services.AddScoped<IAppointmentService, AppointmentService>();
         services.AddScoped<IAuthenticationService, AuthenticationService>();
