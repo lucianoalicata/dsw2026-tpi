@@ -7,12 +7,14 @@ using Dsw2026Tpi.CrossCutting.Exceptions;
 using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace Dsw2026Tpi.Application.Services;
 
 public class AvailabilityService : IAvailabilityService
 {
     private readonly IPersistence _persistence;
+    private readonly ILogger<AvailabilityService> _logger;
 
     private static readonly string[] DayNames =
         { "DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO" };
@@ -28,9 +30,10 @@ public class AvailabilityService : IAvailabilityService
         new DateOnly(2026,11,23), new DateOnly(2026,12,8), new DateOnly(2026,12,25)
     };
 
-    public AvailabilityService(IPersistence persistence)
+    public AvailabilityService(IPersistence persistence, ILogger<AvailabilityService> logger)
     {
         _persistence = persistence;
+        _logger = logger;
     }
 
     private record ParsedDay(int DayOfWeek, TimeOnly Start, TimeOnly End);
@@ -151,6 +154,7 @@ public class AvailabilityService : IAvailabilityService
             }
         }
 
+        _logger.LogInformation("Se generó disponibilidad para el médico {DoctorId}: {SlotsCreated} turnos nuevos creados.", request.DoctorId, created);
         return new AvailabilityModel.Response(request.DoctorId, created);
     }
 
@@ -204,6 +208,7 @@ public class AvailabilityService : IAvailabilityService
             }
         }
 
+        _logger.LogInformation("Se sobrescribió la disponibilidad del mes para el médico {DoctorId}: {SlotsCreated} turnos nuevos creados.", request.DoctorId, created);
         return new AvailabilityModel.Response(request.DoctorId, created);
     }
 
