@@ -174,4 +174,16 @@
   <data name="SPECIALITY_NAME_TAKEN" xml:space="preserve">
     <value>Ya existe una especialidad con ese nombre</value>
   </data>
+  <data name="AVAILABILITY_INVALID_DAY" xml:space="preserve">
+    <value> El día indicado no es válido</value>
+  </data>
+  <data name="AVAILABILITY_INVALID_TIME_RANGE" xml:space="preserve">
+    <value>El horario de inicio debe ser menor al horario de fin</value>
+  </data>
+  <data name="AVAILABILITY_EMPTY_DAYS" xml:space="preserve">
+    <value>Debe indicar al menos un día de atención</value>
+  </data>
+  <data name="AVAILABILITY_OVERLAP" xml:space="preserve">
+    <value>El horario se superpone con otra disponibilidad del médico</value>
+  </data>
 </root>

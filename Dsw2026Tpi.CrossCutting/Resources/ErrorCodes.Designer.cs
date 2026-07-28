@@ -115,6 +115,42 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Debe indicar al menos un día de atención.
+        /// </summary>
+        public static string AVAILABILITY_EMPTY_DAYS {
+            get {
+                return ResourceManager.GetString("AVAILABILITY_EMPTY_DAYS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a  El día indicado no es válido.
+        /// </summary>
+        public static string AVAILABILITY_INVALID_DAY {
+            get {
+                return ResourceManager.GetString("AVAILABILITY_INVALID_DAY", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El horario de inicio debe ser menor al horario de fin.
+        /// </summary>
+        public static string AVAILABILITY_INVALID_TIME_RANGE {
+            get {
+                return ResourceManager.GetString("AVAILABILITY_INVALID_TIME_RANGE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El horario se superpone con otra disponibilidad del médico.
+        /// </summary>
+        public static string AVAILABILITY_OVERLAP {
+            get {
+                return ResourceManager.GetString("AVAILABILITY_OVERLAP", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a La matrícula del médico es obligatoria.
         /// </summary>
         public static string DOCTOR_INVALID_LICENSE {
