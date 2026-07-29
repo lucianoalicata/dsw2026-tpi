@@ -186,4 +186,13 @@
   <data name="AVAILABILITY_OVERLAP" xml:space="preserve">
     <value>El horario se superpone con otra disponibilidad del médico</value>
   </data>
+  <data name="PATIENT_INVALID_EMAIL" xml:space="preserve">
+    <value>El email ingresado no es válido</value>
+  </data>
+  <data name="PATIENT_INVALID_DNI" xml:space="preserve">
+    <value>El DNI debe tener 7 u 8 dígitos</value>
+  </data>
+  <data name="PATIENT_DNI_TAKEN" xml:space="preserve">
+    <value>Ya existe un paciente registrado con ese DNI</value>
+  </data>
 </root>

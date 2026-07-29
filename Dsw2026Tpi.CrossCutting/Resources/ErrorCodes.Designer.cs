@@ -196,6 +196,33 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a Ya existe un paciente registrado con ese DNI.
+        /// </summary>
+        public static string PATIENT_DNI_TAKEN {
+            get {
+                return ResourceManager.GetString("PATIENT_DNI_TAKEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El DNI debe tener 7 u 8 dígitos.
+        /// </summary>
+        public static string PATIENT_INVALID_DNI {
+            get {
+                return ResourceManager.GetString("PATIENT_INVALID_DNI", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Busca una cadena traducida similar a El email ingresado no es válido.
+        /// </summary>
+        public static string PATIENT_INVALID_EMAIL {
+            get {
+                return ResourceManager.GetString("PATIENT_INVALID_EMAIL", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se produjo un error al registrar el usuario.
         /// </summary>
         public static string REGISTER_USER_CONFLICT {
