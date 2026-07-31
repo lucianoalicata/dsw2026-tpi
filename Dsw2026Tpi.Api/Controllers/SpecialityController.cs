@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
-[Route("specialities")]
+[Route("api/specialties")]
 public class SpecialityController : AppController
 {
     private readonly ISpecialityService _service;
