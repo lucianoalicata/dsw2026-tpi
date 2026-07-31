@@ -223,6 +223,15 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         }
         
         /// <summary>
+        ///   Busca una cadena traducida similar a El límite de solicitudes permitidas fue excedido. Espere e intente nuevamente..
+        /// </summary>
+        public static string RATE_LIMIT_EXCEDED {
+            get {
+                return ResourceManager.GetString("RATE_LIMIT_EXCEDED", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Busca una cadena traducida similar a Se produjo un error al registrar el usuario.
         /// </summary>
         public static string REGISTER_USER_CONFLICT {
