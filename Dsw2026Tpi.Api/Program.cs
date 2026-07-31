@@ -49,8 +49,8 @@ public class Program
             app.UseAuthentication();
             app.UseAuthorization();
             app.UseCors();
+            app.UseRateLimiter();
             app.UseMiddleware<ExceptionHandlingMiddleware>();
-
             app.MapControllers();
             app.MapHealthChecks("/health-check");
 

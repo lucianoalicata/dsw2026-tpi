@@ -3,6 +3,7 @@ using Dsw2026Tpi.Application.Interfaces;
 using Dsw2026Tpi.CrossCutting.Identity;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
@@ -20,10 +21,12 @@ public class AppointmentController : AppController
 
     [HttpPost]
     [Authorize(Policy =Policies.PatientPolicy)]
+    [EnableRateLimiting("AppointmentBookingPolicy")]
     [ProducesResponseType (StatusCodes.Status200OK)]
     [ProducesResponseType (StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType (StatusCodes.Status409Conflict)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<IActionResult> Add ([FromBody] AppointmentModel.Request request)
     {
         var result = await _service.BookAppointment(request);
