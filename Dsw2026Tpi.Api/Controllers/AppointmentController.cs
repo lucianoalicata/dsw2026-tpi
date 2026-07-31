@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Dsw2026Tpi.Api.Controllers;
 
-[Route("appointments")]
+[Route("api/appointments")]
 
 [Authorize]
 public class AppointmentController : AppController
