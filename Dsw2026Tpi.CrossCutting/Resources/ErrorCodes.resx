@@ -195,4 +195,7 @@
   <data name="PATIENT_DNI_TAKEN" xml:space="preserve">
     <value>Ya existe un paciente registrado con ese DNI</value>
   </data>
+  <data name="RATE_LIMIT_EXCEDED" xml:space="preserve">
+    <value>El límite de solicitudes permitidas fue excedido. Espere e intente nuevamente.</value>
+  </data>
 </root>
