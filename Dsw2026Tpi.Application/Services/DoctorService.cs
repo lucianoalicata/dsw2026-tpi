@@ -88,6 +88,7 @@ public class DoctorService : IDoctorService
             r.DoctorId == id && !r.Deleted && r.Month == today.Month && r.Year == today.Year);
 
         return rules?.Select(r => new DoctorModel.AvailabilityResponse(
+            r.Id,
             DayNames[r.DayOfWeek],
             r.StartTime.ToString("HH:mm"),
             r.EndTime.ToString("HH:mm")))

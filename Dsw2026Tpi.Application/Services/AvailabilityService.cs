@@ -8,6 +8,7 @@ using Dsw2026Tpi.CrossCutting.Resources;
 using Dsw2026Tpi.Domain.Entities;
 using Dsw2026Tpi.Domain.Interfaces;
 using Microsoft.Extensions.Logging;
+using System.Text.Json;
 
 namespace Dsw2026Tpi.Application.Services;
 
@@ -21,14 +22,19 @@ public class AvailabilityService : IAvailabilityService
 
     // Feriados nacionales inamovibles de Argentina, 2026.
     // TODO: actualizar cada año (o mover a configuración) si el TP se reutiliza.
-    private static readonly HashSet<DateOnly> Holidays2026 = new()
+    private static readonly HashSet<DateOnly> Feriados = CargarFeriados();
+    private static HashSet<DateOnly> CargarFeriados()
     {
-        new DateOnly(2026,1,1), new DateOnly(2026,2,16), new DateOnly(2026,2,17),
-        new DateOnly(2026,3,24), new DateOnly(2026,4,2), new DateOnly(2026,4,3),
-        new DateOnly(2026,5,1), new DateOnly(2026,5,25), new DateOnly(2026,6,20),
-        new DateOnly(2026,7,9), new DateOnly(2026,8,17), new DateOnly(2026,10,12),
-        new DateOnly(2026,11,23), new DateOnly(2026,12,8), new DateOnly(2026,12,25)
-    };
+        var path = Path.Combine(AppContext.BaseDirectory, "Sources", "feriados.json");
+
+        if (!File.Exists(path))
+            return new HashSet<DateOnly>();
+
+        var json = File.ReadAllText(path);
+        var fechas = JsonSerializer.Deserialize<List<string>>(json) ?? new List<string>();
+
+        return fechas.Select(DateOnly.Parse).ToHashSet();
+    }
 
     public AvailabilityService(IPersistence persistence, ILogger<AvailabilityService> logger)
     {
@@ -91,7 +97,7 @@ public class AvailabilityService : IAvailabilityService
 
         while (date <= monthEnd)
         {
-            if ((int)date.DayOfWeek == rule.DayOfWeek && !Holidays2026.Contains(date))
+            if ((int)date.DayOfWeek == rule.DayOfWeek && !Feriados.Contains(date))
             {
                 var slotStart = rule.StartTime;
                 while (slotStart.AddMinutes(30) <= rule.EndTime)
