@@ -18,9 +18,12 @@ public class DoctorService : IDoctorService
 
     public async Task<Pagination<DoctorModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
     {
-        var doctors = await _persistence.Paginate<Doctor, string>(pageSize, pageIndex, d => d.IsActive &&
-                                           (string.IsNullOrWhiteSpace(name) || d.Name.Contains(name)), x => x.Name, nameof(Doctor.Speciality));
-
+        var doctors = await _persistence.Paginate<Doctor, string>(
+            pageSize,
+            pageIndex,
+            d => !d.Deleted && (string.IsNullOrWhiteSpace(name) || d.Name.Contains(name)),
+            x => x.Name,
+            nameof(Doctor.Speciality));
         return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,
             new DoctorModel.SpecialityDto(d.Speciality?.Id, d.Speciality?.Name)));
     }
@@ -65,13 +68,12 @@ public class DoctorService : IDoctorService
         return new DoctorModel.Response(doctor.Id, doctor.Name, doctor.LicenseNumber,
             new DoctorModel.SpecialityDto(speciality.Id, speciality.Name)); }
 
-        public async Task Delete(Guid id)
+    public async Task Delete(Guid id)
     {
         var doctor = await _persistence.GetById<Doctor>(id) ??
             throw new EntityNotFoundException(nameof(Doctor));
 
-        doctor.Deactivate();
-
+        doctor.SoftDelete();
         await _persistence.Update(doctor);
     }
 

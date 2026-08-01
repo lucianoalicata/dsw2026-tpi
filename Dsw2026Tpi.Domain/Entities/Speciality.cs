@@ -4,8 +4,7 @@ public class Speciality: EntityBase
 {
     public string Name { get; private set; }
     public string Description { get; private set; }
-
-    public bool IsActive { get; private set; }
+    public bool Deleted { get; private set; }
 
     #region Constructor for EF
 #pragma warning disable CS8618
@@ -17,14 +16,12 @@ public class Speciality: EntityBase
     {
         Name = name;
         Description = description;
-        IsActive = true;
+        Deleted = false;
     }
-
-    public void Deactivate()
+    public void SoftDelete()
     {
-        IsActive = false;
+        Deleted = true;
     }
-
     public void UpdateData(string name, string description)
     {
         Name = name;

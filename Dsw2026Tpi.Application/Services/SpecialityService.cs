@@ -17,7 +17,7 @@ public class SpecialityService : ISpecialityService
     public async Task<Pagination<SpecialityModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
     {
         var specialities = await _persistence.Paginate<Speciality, string>(pageSize, pageIndex,
-            s => s.IsActive && (string.IsNullOrWhiteSpace(name) || s.Name.Contains(name)), s => s.Name);
+            s => !s.Deleted && (string.IsNullOrWhiteSpace(name) || s.Name.Contains(name)), s => s.Name);
 
         return specialities.Map(s => new SpecialityModel.Response(s.Id, s.Name, s.Description));
     }
@@ -52,16 +52,15 @@ public class SpecialityService : ISpecialityService
     {
         var speciality = await _persistence.GetById<Speciality>(id) ??
             throw new EntityNotFoundException(nameof(Speciality));
+        speciality.SoftDelete();
 
-        speciality.Deactivate();
         await _persistence.Update(speciality);
     }
 
     private async Task CheckNameAvailable(string name, Guid? excludeId = null)
     {
         var duplicate = await _persistence.First<Speciality>(s =>
-            s.IsActive && s.Name == name && (excludeId == null || s.Id != excludeId));
-
+            !s.Deleted && s.Name == name && (excludeId == null || s.Id != excludeId));
         if (duplicate is not null)
             throw new ConflictException(nameof(ErrorCodes.SPECIALITY_NAME_TAKEN), ErrorCodes.SPECIALITY_NAME_TAKEN);
     }
