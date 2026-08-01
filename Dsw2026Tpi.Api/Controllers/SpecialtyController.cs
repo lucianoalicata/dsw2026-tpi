@@ -7,10 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 namespace Dsw2026Tpi.Api.Controllers;
 
 [Route("api/specialties")]
-public class SpecialityController : AppController
+public class SpecialtyController : AppController
 {
-    private readonly ISpecialityService _service;
-    public SpecialityController(ISpecialityService service)
+    private readonly ISpecialtyService _service;
+    public SpecialtyController(ISpecialtyService service)
     {
         _service = service;
     }
@@ -29,7 +29,7 @@ public class SpecialityController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Add([FromBody] SpecialityModel.Request request)
+    public async Task<IActionResult> Add([FromBody] SpecialtyModel.Request request)
     {
         var result = await _service.Add(request);
         return Ok(result);
@@ -40,7 +40,7 @@ public class SpecialityController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<IActionResult> Update(Guid id, [FromBody] SpecialityModel.Request request)
+    public async Task<IActionResult> Update(Guid id, [FromBody] SpecialtyModel.Request request)
     {
         var result = await _service.Update(id, request);
         return Ok(result);

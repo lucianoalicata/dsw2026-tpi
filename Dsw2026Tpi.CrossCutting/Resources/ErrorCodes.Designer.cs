@@ -261,27 +261,27 @@ namespace Dsw2026Tpi.CrossCutting.Resources {
         /// <summary>
         ///   Busca una cadena traducida similar a La descripción de la especialidad debe tener entre 10 y 100 caracteres.
         /// </summary>
-        public static string SPECIALITY_INVALID_DESCRIPTION {
+        public static string SPECIALTY_INVALID_DESCRIPTION {
             get {
-                return ResourceManager.GetString("SPECIALITY_INVALID_DESCRIPTION", resourceCulture);
+                return ResourceManager.GetString("SPECIALTY_INVALID_DESCRIPTION", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Busca una cadena traducida similar a El nombre de la especialidad debe tener entre 3 y 100 caracteres.
         /// </summary>
-        public static string SPECIALITY_INVALID_NAME {
+        public static string SPECIALTY_INVALID_NAME {
             get {
-                return ResourceManager.GetString("SPECIALITY_INVALID_NAME", resourceCulture);
+                return ResourceManager.GetString("SPECIALTY_INVALID_NAME", resourceCulture);
             }
         }
         
         /// <summary>
         ///   Busca una cadena traducida similar a Ya existe una especialidad con ese nombre.
         /// </summary>
-        public static string SPECIALITY_NAME_TAKEN {
+        public static string SPECIALTY_NAME_TAKEN {
             get {
-                return ResourceManager.GetString("SPECIALITY_NAME_TAKEN", resourceCulture);
+                return ResourceManager.GetString("SPECIALTY_NAME_TAKEN", resourceCulture);
             }
         }
         

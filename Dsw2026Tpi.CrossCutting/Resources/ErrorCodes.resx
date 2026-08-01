@@ -165,13 +165,13 @@
   <data name="INVALID_AVAILABILITY_ID" xml:space="preserve">
     <value>El turno (availabilityId) es obligatorio</value>
   </data>
-  <data name="SPECIALITY_INVALID_NAME" xml:space="preserve">
+  <data name="SPECIALTY_INVALID_NAME" xml:space="preserve">
     <value>El nombre de la especialidad debe tener entre 3 y 100 caracteres</value>
   </data>
-  <data name="SPECIALITY_INVALID_DESCRIPTION" xml:space="preserve">
+  <data name="SPECIALTY_INVALID_DESCRIPTION" xml:space="preserve">
     <value>La descripción de la especialidad debe tener entre 10 y 100 caracteres</value>
   </data>
-  <data name="SPECIALITY_NAME_TAKEN" xml:space="preserve">
+  <data name="SPECIALTY_NAME_TAKEN" xml:space="preserve">
     <value>Ya existe una especialidad con ese nombre</value>
   </data>
   <data name="AVAILABILITY_INVALID_DAY" xml:space="preserve">

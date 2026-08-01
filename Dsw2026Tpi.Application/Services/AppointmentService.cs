@@ -29,7 +29,7 @@ public class AppointmentService : IAppointmentService
         if (string.IsNullOrWhiteSpace(request.Reason) || request.Reason.Length < 5)
             throw new ValidationException(ErrorCodes.INVALID_REASON, nameof(ErrorCodes.INVALID_REASON));
 
-        var doctor = await _persistence.GetById<Doctor>(request.DoctorId, nameof(Doctor.Speciality)) ?? 
+        var doctor = await _persistence.GetById<Doctor>(request.DoctorId, nameof(Doctor.Specialty)) ?? 
             throw new EntityNotFoundException(nameof(Doctor));
 
         var patient = await _persistence.First<Patient>(p => p.Dni == request.Patient.Dni) ?? 
@@ -78,7 +78,7 @@ public class AppointmentService : IAppointmentService
     {
         var appointment = await _persistence.GetById<Appointment>(id,
                 nameof(Appointment.AvailabilitySlot),$"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}",
-                $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Speciality)}") ?? 
+                $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}") ?? 
                 throw new EntityNotFoundException(nameof(Appointment));
 
         try
@@ -109,7 +109,7 @@ public class AppointmentService : IAppointmentService
             a => a.AvailabilitySlot!.SlotDate,
             nameof(Appointment.AvailabilitySlot),
             $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}",
-            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Speciality)}");
+            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}");
 
         return result.Map(a => MapToResponse(a, a.AvailabilitySlot!, a.AvailabilitySlot!.Doctor!));
     }
@@ -121,7 +121,7 @@ public class AppointmentService : IAppointmentService
             a=> a.AvailabilitySlot!.StartTime,
             nameof(Appointment.AvailabilitySlot),
             $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}",
-            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Speciality)}",
+            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}",
             nameof(Appointment.Patient));
 
         return result.Map(a => MapToResponse(a, a.AvailabilitySlot!, a.AvailabilitySlot!.Doctor!));
@@ -140,17 +140,17 @@ public class AppointmentService : IAppointmentService
 
         var result = await _persistence.Paginate<Appointment, DateOnly> (pageSize, pageIndex,
             a =>(!doctorId.HasValue ||a.AvailabilitySlot!.DoctorId == doctorId) &&
-                (!specialtyId.HasValue || a.AvailabilitySlot!.Doctor!.SpecialityId== specialtyId) &&
+                (!specialtyId.HasValue || a.AvailabilitySlot!.Doctor!.SpecialtyId== specialtyId) &&
                 (!patientId.HasValue || a.PatientId ==patientId) &&
                 (!date.HasValue || a.AvailabilitySlot!.SlotDate == date),
             a =>a.AvailabilitySlot!.SlotDate,
             nameof(Appointment.AvailabilitySlot),
             $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}",
-            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Speciality)}");
+            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}");
 
         return result.Map (a => MapToResponse(a, a.AvailabilitySlot!, a.AvailabilitySlot!.Doctor!));
     }
 
     private static AppointmentModel.Response MapToResponse(Appointment appointment, AvailabilitySlot slot, Doctor doctor)
-        =>new( appointment.Id,doctor.Name, doctor.Speciality?.Name ?? string.Empty,slot.SlotDate, slot.StartTime, appointment.Status.ToString());
+        =>new( appointment.Id,doctor.Name, doctor.Specialty?.Name ?? string.Empty,slot.SlotDate, slot.StartTime, appointment.Status.ToString());
 }
