@@ -23,9 +23,9 @@ public class DoctorService : IDoctorService
             pageIndex,
             d => !d.Deleted && (string.IsNullOrWhiteSpace(name) || d.Name.Contains(name)),
             x => x.Name,
-            nameof(Doctor.Speciality));
+            nameof(Doctor.Specialty));
         return doctors.Map(d => new DoctorModel.Response(d.Id, d.Name, d.LicenseNumber,
-            new DoctorModel.SpecialityDto(d.Speciality?.Id, d.Speciality?.Name)));
+            new DoctorModel.SpecialityDto(d.Specialty?.Id, d.Specialty?.Name)));
     }
 
     public async Task<DoctorModel.Response> Add(DoctorModel.Request request)
@@ -36,8 +36,8 @@ public class DoctorService : IDoctorService
         if (string.IsNullOrWhiteSpace(request.LicenseNumber))
             throw new ValidationException(ErrorCodes.DOCTOR_INVALID_LICENSE, nameof(ErrorCodes.DOCTOR_INVALID_LICENSE));
 
-        var speciality = await _persistence.GetById<Speciality>(request.SpecialityId) ??
-            throw new EntityNotFoundException(nameof(Speciality));
+        var speciality = await _persistence.GetById<Specialty>(request.SpecialityId) ??
+            throw new EntityNotFoundException(nameof(Specialty));
 
         var doctor = new Doctor(request.Name, request.LicenseNumber, speciality);
 
@@ -58,8 +58,8 @@ public class DoctorService : IDoctorService
         var doctor = await _persistence.GetById<Doctor>(id) ??
             throw new EntityNotFoundException(nameof(Doctor));
 
-        var speciality = await _persistence.GetById<Speciality>(request.SpecialityId) ??
-            throw new EntityNotFoundException(nameof(Speciality));
+        var speciality = await _persistence.GetById<Specialty>(request.SpecialityId) ??
+            throw new EntityNotFoundException(nameof(Specialty));
 
         doctor.UpdateData(request.Name, request.LicenseNumber, speciality);
 
