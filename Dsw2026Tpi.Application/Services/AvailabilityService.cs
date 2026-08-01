@@ -90,24 +90,39 @@ public class AvailabilityService : IAvailabilityService
         return new string(chars.ToArray());
     }
 
-    private static List<AvailabilitySlot> GenerateSlotsForRule(AvailabilityRule rule, DateOnly today, DateOnly monthEnd)
+    private List<AvailabilitySlot> GenerateSlotsForRule(AvailabilityRule rule, DateOnly today, DateOnly monthEnd)
     {
         var slots = new List<AvailabilitySlot>();
         var date = today;
+        var huboAlgunaOcurrencia = false;
 
         while (date <= monthEnd)
         {
-            if ((int)date.DayOfWeek == rule.DayOfWeek && !Feriados.Contains(date))
+            if ((int)date.DayOfWeek == rule.DayOfWeek)
             {
-                var slotStart = rule.StartTime;
-                while (slotStart.AddMinutes(30) <= rule.EndTime)
+                huboAlgunaOcurrencia = true;
+
+                if (Feriados.Contains(date))
                 {
-                    var slotEnd = slotStart.AddMinutes(30);
-                    slots.Add(new AvailabilitySlot(rule.DoctorId, rule.Id, date, slotStart, slotEnd));
-                    slotStart = slotEnd;
+                    _logger.LogInformation("Se omite el {Fecha} para el médico {DoctorId} por ser feriado.", date, rule.DoctorId);
+                }
+                else
+                {
+                    var slotStart = rule.StartTime;
+                    while (slotStart.AddMinutes(30) <= rule.EndTime)
+                    {
+                        var slotEnd = slotStart.AddMinutes(30);
+                        slots.Add(new AvailabilitySlot(rule.DoctorId, rule.Id, date, slotStart, slotEnd));
+                        slotStart = slotEnd;
+                    }
                 }
             }
             date = date.AddDays(1);
+        }
+
+        if (!huboAlgunaOcurrencia)
+        {
+            _logger.LogInformation("No quedan más días {Dia} en lo que resta del mes para el médico {DoctorId}.", DayNames[rule.DayOfWeek], rule.DoctorId);
         }
 
         return slots;
