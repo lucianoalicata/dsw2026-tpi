@@ -11,6 +11,6 @@ public class SpecialtyConfiguration : IEntityTypeConfiguration<Specialty>
         builder.ToTable("Specialties");
         builder.HasIndex(s => s.Name)
             .IsUnique()
-            .HasFilter("[IsActive] = 1");
+            .HasFilter("[Deleted] = 0");
     }
 }
