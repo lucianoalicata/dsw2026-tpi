@@ -35,10 +35,10 @@ public class AppointmentService : IAppointmentService
         var patient = await _persistence.First<Patient>(p => p.Dni == request.Patient.Dni) ?? 
             throw new EntityNotFoundException(nameof(Patient));
 
-        if (request.AvailabilityId == Guid.Empty)
+        if (request.AvailabilitySlotId == Guid.Empty)
             throw new ValidationException(ErrorCodes.INVALID_AVAILABILITY_ID, nameof(ErrorCodes.INVALID_AVAILABILITY_ID));
 
-        var slot = await _persistence.GetById<AvailabilitySlot>(request.AvailabilityId) ?? 
+        var slot = await _persistence.GetById<AvailabilitySlot>(request.AvailabilitySlotId) ?? 
             throw new EntityNotFoundException(nameof(AvailabilitySlot));
 
         if (slot.DoctorId != doctor.Id)
