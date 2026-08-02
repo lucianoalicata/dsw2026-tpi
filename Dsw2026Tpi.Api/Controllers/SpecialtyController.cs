@@ -53,7 +53,7 @@ public class SpecialtyController : AppController
     public async Task<IActionResult> Delete(Guid id)
     {
         await _service.Delete(id);
-        return Ok();
+        return Ok("ok");
     }
 
 }
