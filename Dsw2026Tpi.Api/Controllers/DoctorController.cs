@@ -17,6 +17,7 @@ public class DoctorController : AppController
     }
 
     [HttpGet]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageSize, [FromQuery] int pageIndex, [FromQuery] string? name = null)
     {
@@ -57,6 +58,7 @@ public class DoctorController : AppController
     }
 
     [HttpGet("{id:guid}/availabilities")]
+    [Authorize]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<IActionResult> GetAvailabilities(Guid id)
