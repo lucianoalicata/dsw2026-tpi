@@ -20,8 +20,7 @@ public class AvailabilityService : IAvailabilityService
     private static readonly string[] DayNames =
         { "DOMINGO", "LUNES", "MARTES", "MIÉRCOLES", "JUEVES", "VIERNES", "SÁBADO" };
 
-    // Feriados nacionales inamovibles de Argentina, 2026.
-    // TODO: actualizar cada año (o mover a configuración) si el TP se reutiliza.
+    
     private static readonly HashSet<DateOnly> Feriados = CargarFeriados();
     private static HashSet<DateOnly> CargarFeriados()
     {
@@ -147,6 +146,7 @@ public class AvailabilityService : IAvailabilityService
             ?.ToList() ?? new List<AvailabilitySlot>();
 
         int created = 0;
+        var resultRules = new List<AvailabilityRule>();
 
         foreach (var day in parsedDays)
         {
@@ -154,7 +154,10 @@ public class AvailabilityService : IAvailabilityService
                 r.DayOfWeek == day.DayOfWeek && r.StartTime == day.Start && r.EndTime == day.End);
 
             if (duplicate is not null)
-                continue; // ya existe exactamente igual, no hacemos nada (RN: crear solo si no existe)
+            {
+                resultRules.Add(duplicate); // ya existía exactamente igual, la devolvemos igual en la respuesta
+                continue;
+            }
 
             var overlapping = existingRules.Any(r =>
                 r.DayOfWeek == day.DayOfWeek && day.Start < r.EndTime && r.StartTime < day.End);
@@ -164,6 +167,7 @@ public class AvailabilityService : IAvailabilityService
 
             var rule = new AvailabilityRule(request.DoctorId, today.Month, today.Year, day.DayOfWeek, day.Start, day.End);
             await _persistence.Add(rule);
+            resultRules.Add(rule);
 
             var newSlots = GenerateSlotsForRule(rule, today, monthEnd)
                 .Where(ns => !existingSlots.Any(es => es.SlotDate == ns.SlotDate && es.StartTime == ns.StartTime));
@@ -176,7 +180,13 @@ public class AvailabilityService : IAvailabilityService
         }
 
         _logger.LogInformation("Se generó disponibilidad para el médico {DoctorId}: {SlotsCreated} turnos nuevos creados.", request.DoctorId, created);
-        return new AvailabilityModel.Response(request.DoctorId, created);
+
+        var responseDays = resultRules
+            .OrderBy(r => r.DayOfWeek)
+            .Select(r => new DoctorModel.AvailabilityResponse(r.Id, DayNames[r.DayOfWeek], r.StartTime.ToString("HH:mm"), r.EndTime.ToString("HH:mm")))
+            .ToList();
+
+        return new AvailabilityModel.Response(responseDays);
     }
 
     public async Task<AvailabilityModel.Response> Update(AvailabilityModel.Request request)
@@ -203,7 +213,7 @@ public class AvailabilityService : IAvailabilityService
             s.DoctorId == request.DoctorId && !s.Deleted && s.SlotDate >= today && s.SlotDate <= monthEnd))
             ?.ToList() ?? new List<AvailabilitySlot>();
 
-        // Solo borramos los slots libres. Los ya reservados por un paciente se dejan intactos.
+
         foreach (var slot in existingSlots.Where(s => s.Status == SlotStatus.Available))
         {
             slot.SoftDelete();
@@ -213,11 +223,13 @@ public class AvailabilityService : IAvailabilityService
         var stillBooked = existingSlots.Where(s => s.Status == SlotStatus.Booked).ToList();
 
         int created = 0;
+        var resultRules = new List<AvailabilityRule>();
 
         foreach (var day in parsedDays)
         {
             var rule = new AvailabilityRule(request.DoctorId, today.Month, today.Year, day.DayOfWeek, day.Start, day.End);
             await _persistence.Add(rule);
+            resultRules.Add(rule);
 
             var newSlots = GenerateSlotsForRule(rule, today, monthEnd)
                 .Where(ns => !stillBooked.Any(bs => bs.SlotDate == ns.SlotDate && bs.StartTime == ns.StartTime));
@@ -230,7 +242,13 @@ public class AvailabilityService : IAvailabilityService
         }
 
         _logger.LogInformation("Se sobrescribió la disponibilidad del mes para el médico {DoctorId}: {SlotsCreated} turnos nuevos creados.", request.DoctorId, created);
-        return new AvailabilityModel.Response(request.DoctorId, created);
+
+        var responseDays = resultRules
+            .OrderBy(r => r.DayOfWeek)
+            .Select(r => new DoctorModel.AvailabilityResponse(r.Id, DayNames[r.DayOfWeek], r.StartTime.ToString("HH:mm"), r.EndTime.ToString("HH:mm")))
+            .ToList();
+
+        return new AvailabilityModel.Response(responseDays);
     }
 
 
