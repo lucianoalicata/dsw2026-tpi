@@ -9,9 +9,12 @@ public class AvailabilitySlotConfiguration : IEntityTypeConfiguration<Availabili
     public void Configure(EntityTypeBuilder<AvailabilitySlot> builder)
     {
         builder.ToTable("AvailabilitySlots");
-        builder.HasIndex(s => new { s.DoctorId, s.SlotDate, s.StartTime }).IsUnique();
+        builder.HasIndex(s => new { s.DoctorId, s.SlotDate, s.StartTime })
+            .IsUnique()
+            .HasFilter("[Deleted] = 0");
 
         // Guarda el enum como texto (varchar) en lugar de nª
         builder.Property(s => s.Status).HasConversion<string>().HasMaxLength(20);
     }
 }
+
