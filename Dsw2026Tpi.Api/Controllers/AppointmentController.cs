@@ -38,10 +38,10 @@ public class AppointmentController : AppController
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status409Conflict)]
-    public async Task<IActionResult> Cancel (Guid id)
+    public async Task<IActionResult> Cancel(Guid id)
     {
-        var result = await _service.CancelAppointment(id );
-        return Ok(result);
+        await _service.CancelAppointment(id);
+        return Ok("ok");
     }
 
     [HttpGet("patient")]
