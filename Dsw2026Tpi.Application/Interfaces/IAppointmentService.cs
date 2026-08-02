@@ -10,6 +10,6 @@ public interface IAppointmentService
     Task<AppointmentModel.Response> CancelAppointment(Guid id);
     Task<Pagination<AppointmentModel.Response>> GetPatientAppointments(string dni, int pageSize,int pageIndex);
     Task<Pagination<AppointmentModel.Response>>  GetAppointmentsByDate(DateOnly date,int pageSize, int pageIndex);
-    Task<Pagination<AppointmentModel.Response>> SearchAppointments (Guid? specialtyId,Guid? doctorId,string? dni, 
-                                                                    DateOnly? date, int pageSize, int pageIndex);
+    Task<Pagination<AppointmentModel.SearchResponse>> SearchAppointments(Guid? specialtyId, Guid? doctorId, string? dni, 
+                                                                            DateOnly? date, int pageSize, int pageIndex);
 }
