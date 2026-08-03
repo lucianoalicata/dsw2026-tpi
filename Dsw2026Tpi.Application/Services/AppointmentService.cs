@@ -102,7 +102,7 @@ public class AppointmentService : IAppointmentService
     public async Task<Pagination<AppointmentModel.Response>> GetPatientAppointments(string dni, int pageSize, int pageIndex)
     {
         var patient = await _persistence.First<Patient>(p => p.Dni == dni) ??
-        throw new EntityNotFoundException(nameof(Patient));
+            throw new EntityNotFoundException(nameof(Patient));
 
         var result = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
             a => a.PatientId == patient.Id && a.Status == AppointmentStatus.Booked,
@@ -166,7 +166,7 @@ public class AppointmentService : IAppointmentService
         return new AppointmentModel.SearchResponse(
             appointment.Id,
             appointment.Status.ToString(),
-            new AppointmentModel.PatientSummary(long.Parse(patient.Dni), patient.FullName),
+            new AppointmentModel.PatientSummary(long.Parse(patient.Dni),""),
             new AppointmentModel.DoctorSummary(
                 doctor.Id,
                 doctor.Name,
