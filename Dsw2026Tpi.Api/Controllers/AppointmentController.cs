@@ -45,14 +45,15 @@ public class AppointmentController : AppController
     }
 
     [HttpGet("patient")]
-    [Authorize(Policy= Policies.PatientPolicy)]
+    [Authorize(Policy = Policies.PatientPolicy)]
     [ProducesResponseType(StatusCodes.Status200OK)]
+
     public async Task<IActionResult> GetByPatient(
-        [FromQuery] string dni, 
-        [FromQuery] int pageSize =10, 
-        [FromQuery] int pageIndex=1)
+        [FromQuery] string dni,
+        [FromQuery] int pageSize = 10,
+        [FromQuery] int pageIndex = 1)
     {
-        var appointments = await _service.GetPatientAppointments(dni ,pageSize,pageIndex);
+        var appointments = await _service.GetPatientAppointments(dni, pageSize, pageIndex);
         return Ok(appointments);
     }
 

@@ -35,10 +35,10 @@ public class AppointmentService : IAppointmentService
         var patient = await _persistence.First<Patient>(p => p.Dni == request.Patient.Dni) ?? 
             throw new EntityNotFoundException(nameof(Patient));
 
-        if (request.AvailabilityId == Guid.Empty)
+        if (request.AvailabilitySlotId == Guid.Empty)
             throw new ValidationException(ErrorCodes.INVALID_AVAILABILITY_ID, nameof(ErrorCodes.INVALID_AVAILABILITY_ID));
 
-        var slot = await _persistence.GetById<AvailabilitySlot>(request.AvailabilityId) ?? 
+        var slot = await _persistence.GetById<AvailabilitySlot>(request.AvailabilitySlotId) ?? 
             throw new EntityNotFoundException(nameof(AvailabilitySlot));
 
         if (slot.DoctorId != doctor.Id)
@@ -99,9 +99,9 @@ public class AppointmentService : IAppointmentService
         return MapToResponse(appointment, appointment.AvailabilitySlot, appointment.AvailabilitySlot.Doctor!);
     }
 
-    public async Task<Pagination<AppointmentModel.Response>> GetPatientAppointments (string dni,int pageSize, int pageIndex)
+    public async Task<Pagination<AppointmentModel.Response>> GetPatientAppointments(string dni, int pageSize, int pageIndex)
     {
-        var patient = await _persistence.First<Patient>(p => p.Dni == dni) ?? 
+        var patient = await _persistence.First<Patient>(p => p.Dni == dni) ??
             throw new EntityNotFoundException(nameof(Patient));
 
         var result = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
@@ -127,30 +127,53 @@ public class AppointmentService : IAppointmentService
         return result.Map(a => MapToResponse(a, a.AvailabilitySlot!, a.AvailabilitySlot!.Doctor!));
     }
 
-    public async Task<Pagination<AppointmentModel.Response>> SearchAppointments(Guid? specialtyId, Guid? doctorId, string? dni, 
-                                                                                DateOnly? date, int pageSize, int pageIndex)
+    public async Task<Pagination<AppointmentModel.SearchResponse>> SearchAppointments(Guid? specialtyId, Guid? doctorId, 
+                                                                string? dni, DateOnly? date, int pageSize, int pageIndex)
     {
         Guid? patientId = null;
+
         if (!string.IsNullOrWhiteSpace(dni))
         {
-            var patient = await _persistence.First<Patient>(p => p.Dni == dni) ?? 
-                throw new EntityNotFoundException(nameof(Patient));
+            var patient = await _persistence.First<Patient>(p => p.Dni == dni);
+
+            if (patient is null)
+            return new Pagination<AppointmentModel.SearchResponse>(pageSize, pageIndex, 0, []);
+
             patientId = patient.Id;
         }
 
-        var result = await _persistence.Paginate<Appointment, DateOnly> (pageSize, pageIndex,
-            a =>(!doctorId.HasValue ||a.AvailabilitySlot!.DoctorId == doctorId) &&
-                (!specialtyId.HasValue || a.AvailabilitySlot!.Doctor!.SpecialtyId== specialtyId) &&
-                (!patientId.HasValue || a.PatientId ==patientId) &&
-                (!date.HasValue || a.AvailabilitySlot!.SlotDate == date),
-            a =>a.AvailabilitySlot!.SlotDate,
+        var result = await _persistence.Paginate<Appointment, DateOnly>(pageSize, pageIndex,
+            a => (!doctorId.HasValue || a.AvailabilitySlot!.DoctorId == doctorId) &&
+                 (!specialtyId.HasValue || a.AvailabilitySlot!.Doctor!.SpecialtyId == specialtyId) &&
+                 (!patientId.HasValue || a.PatientId == patientId) &&
+                 (!date.HasValue || a.AvailabilitySlot!.SlotDate == date),
+            a => a.AvailabilitySlot!.SlotDate,
             nameof(Appointment.AvailabilitySlot),
             $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}",
-            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}");
+            $"{nameof(Appointment.AvailabilitySlot)}.{nameof(AvailabilitySlot.Doctor)}.{nameof(Doctor.Specialty)}",
+            nameof(Appointment.Patient));
 
-        return result.Map (a => MapToResponse(a, a.AvailabilitySlot!, a.AvailabilitySlot!.Doctor!));
+        return result.Map(MapToSearchResponse);
+    }
+
+    private static AppointmentModel.SearchResponse MapToSearchResponse(Appointment appointment)
+    {
+        var slot = appointment.AvailabilitySlot!;
+        var doctor = slot.Doctor!;
+        var specialty = doctor.Specialty!;
+        var patient = appointment.Patient!;
+
+        return new AppointmentModel.SearchResponse(
+            appointment.Id,
+            appointment.Status.ToString(),
+            new AppointmentModel.PatientSummary(long.Parse(patient.Dni),""),
+            new AppointmentModel.DoctorSummary(
+                doctor.Id,
+                doctor.Name,
+                new AppointmentModel.SpecialtySummary(specialty.Id, specialty.Name)));
     }
 
     private static AppointmentModel.Response MapToResponse(Appointment appointment, AvailabilitySlot slot, Doctor doctor)
-        =>new( appointment.Id,doctor.Name, doctor.Specialty?.Name ?? string.Empty,slot.SlotDate, slot.StartTime, appointment.Status.ToString());
+        => new( appointment.Id,doctor.Name, doctor.Specialty?.Name 
+            ?? string.Empty,slot.SlotDate, slot.StartTime, appointment.Status.ToString());
 }
