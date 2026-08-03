@@ -43,7 +43,6 @@
 * **POST `/api/auth/admin/login`:** Autentica a un administrador mediante email y contraseña, retornando el token JWT necesario para acceder a las rutas protegidas.
 * **POST `/api/auth/patient/login`:** Autentica a un paciente mediante email y DNI, registrándolo automáticamente si es su primer acceso, y devuelve un token JWT.
 
-#### 
 
 #### **Especialidades (Specialties)**
 
@@ -54,10 +53,24 @@
 
 
 #### **Citas (Appointments)**
-* **POST `/api/appointments`**: Permite a un usuario con rol **Paciente** realizar la reserva de una cita médica asociada a un bloque de disponibilidad (`AvailabilitySlot`) válido.
-* **GET `/api/appointments/patient`**: Permite a usuarios con rol **Paciente** listar sus turnos ingresando su `dni` como parámetro de consulta. Retorna únicamente las citas en estado `Booked` (reservado) con soporte para paginación (`pageSize`, `pageIndex`).
-* **DELETE `/api/appointments/{id}`**: Permite a usuarios con rol **Paciente** cancelar una cita reservada. Cambia el estado del turno a `Cancelled` y libera el bloque de disponibilidad correspondiente para que pueda volver a ser reservado.
-* **GET `/api/appointments`**: Exclusivo para usuarios con rol **Administrador**. Consulta todos los turnos programados para una fecha específica recibida por parámetro de consulta (`date` en formato `YYYY-MM-DD`), con soporte para paginación.
-* **GET `/api/appointments/search`**: Exclusivo para usuarios con rol **Administrador**. Permite realizar búsquedas avanzadas de citas filtrando mediante combinación opcional de `specialtyId`, `doctorId`, `dni` y `date`, incluyendo soporte para paginación (`pageSize`, `pageIndex`).
+
+* **POST `/api/appointments`:** Permite a un usuario con rol **Paciente** realizar la reserva de una cita médica asociada a un bloque de disponibilidad (`AvailabilitySlot`) válido.
+* **GET `/api/appointments/patient`:** Permite a usuarios con rol **Paciente** listar sus turnos ingresando su `dni` como parámetro de consulta. Retorna únicamente las citas en estado `Booked` (reservado) con soporte para paginación (`pageSize`, `pageIndex`).
+* **DELETE `/api/appointments/{id}`:** Permite a usuarios con rol **Paciente** cancelar una cita reservada. Cambia el estado del turno a `Cancelled` y libera el bloque de disponibilidad correspondiente para que pueda volver a ser reservado.
+* **GET `/api/appointments`:** Exclusivo para usuarios con rol **Administrador**. Consulta todos los turnos programados para una fecha específica recibida por parámetro de consulta (`date` en formato `YYYY-MM-DD`), con soporte para paginación.
+* **GET `/api/appointments/search`:** Exclusivo para usuarios con rol **Administrador**. Permite realizar búsquedas avanzadas de citas filtrando mediante combinación opcional de `specialtyId`, `doctorId`, `dni` y `date`, incluyendo soporte para paginación (`pageSize`, `pageIndex`).
 
 
+#### **Médicos (Doctors)**
+
+* **GET `/api/doctors`:** Disponible para usuarios con rol **Paciente** y **Administrador**. Obtiene el listado de médicos activos, con soporte para paginado (`pageSize`, `pageIndex`) y filtrado opcional por nombre.
+* **GET `/api/doctors/{id}/availabilities`:** Disponible para usuarios con rol **Paciente** y **Administrador**. Devuelve la disponibilidad horaria del médico para el mes actual, agrupada por día de la semana. Retorna un array vacío si el médico es nuevo o todavía no tiene disponibilidad cargada para el mes.
+* **POST `/api/doctors`:** Exclusivo para usuarios con rol **Administrador**. Registra un nuevo médico. El `name` debe tener entre 3 y 100 caracteres, y el `specialtyId` debe corresponder a una especialidad existente. Devuelve el médico creado (con su `id`), o 400/404 si los datos no son válidos o la especialidad no existe.
+* **PUT `/api/doctors/{id}`:** Exclusivo para usuarios con rol **Administrador**. Actualiza los datos de un médico existente. Mismas validaciones que el registro. Devuelve el médico actualizado, o 404/400 si no existe o los datos no son válidos.
+* **DELETE `/api/doctors/{id}`:** Exclusivo para usuarios con rol **Administrador**. Realiza un borrado lógico (soft delete) de un médico cambiando su estado `deleted`.
+
+
+#### **Disponibilidades (Availabilities)**
+
+* **POST `/api/availabilities`:** Exclusivo para usuarios con rol **Administrador**. Recibe un médico y una lista de días con su horario de entrada/salida, y genera automáticamente turnos de 30 minutos para el resto del mes en curso. No genera turnos en días feriados o no laborales (definidos en `Sources/Feriados.json`), ni permite solapamiento de horarios para el mismo médico.
+* **PUT `/api/availabilities`:** Exclusivo para usuarios con rol **Administrador**. Recibe el mismo formato que el POST y sobrescribe la disponibilidad completa del mes en curso, sin afectar los turnos que ya fueron reservados por pacientes.
