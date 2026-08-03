@@ -24,7 +24,7 @@ public class AvailabilityService : IAvailabilityService
     private static readonly HashSet<DateOnly> Feriados = CargarFeriados();
     private static HashSet<DateOnly> CargarFeriados()
     {
-        var path = Path.Combine(AppContext.BaseDirectory, "Sources", "feriados.json");
+        var path = Path.Combine(AppContext.BaseDirectory, "Sources", "Feriados.json");
 
         if (!File.Exists(path))
             return new HashSet<DateOnly>();
