@@ -47,10 +47,10 @@
 
 #### **Especialidades (Specialties)**
 
-* **GET `/api/specialties`:** Obtiene el listado de especialidades activas. Soporta paginado (pageSize, pageIndex) y filtrado opcional por nombre. 
-* **POST `/api/specialties`:** Registra una nueva especialidad médica. El name debe tener entre 3 y 100 caracteres, description entre 10 y 100. Devuelve la especialidad creada (con su id), o 400/409 si los datos no son válidos o el nombre ya existe. 
-* **PUT `/api/specialties/{id}`:** Actualiza el nombre o descripción de una especialidad existente. Mismas validaciones que el registro (name: entre 3 y 100 caracteres, description: entre 10 y 100). Devuelve la especialidad actualizada, o 404/400/409 si no existe, los datos no son válidos, o el nuevo nombre ya está en uso.  
-* **DELETE `/api/specialties/{id}`:** Realiza un borrado lógico (soft delete) de una especialidad cambiando su estado deleted.
+* **GET `/api/specialties`:** Disponible para usuarios con rol **Paciente** y **Administrador**. Obtiene el listado de especialidades activas. Soporta paginado (pageSize, pageIndex) y filtrado opcional por nombre. 
+* **POST `/api/specialties`:** Exclusivo para usuarios con rol **Administrador**. Registra una nueva especialidad médica. El name debe tener entre 3 y 100 caracteres, description entre 10 y 100. Devuelve la especialidad creada (con su id), o 400/409 si los datos no son válidos o el nombre ya existe. 
+* **PUT `/api/specialties/{id}`:** Exclusivo para usuarios con rol **Administrador**. Actualiza el nombre o descripción de una especialidad existente. Mismas validaciones que el registro (name: entre 3 y 100 caracteres, description: entre 10 y 100). Devuelve la especialidad actualizada, o 404/400/409 si no existe, los datos no son válidos, o el nuevo nombre ya está en uso.  
+* **DELETE `/api/specialties/{id}`:** Exclusivo para usuarios con rol **Administrador**. Realiza un borrado lógico (soft delete) de una especialidad cambiando su estado deleted.
 
 
 #### **Citas (Appointments)**
