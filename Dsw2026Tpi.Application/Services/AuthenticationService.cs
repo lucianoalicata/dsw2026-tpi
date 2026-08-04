@@ -48,7 +48,7 @@ public class AuthenticationService : IAuthenticationService
             throw new AuthenticationException();
         }
 
-        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()?.ToUpper();
 
         var token  = _jwtService.GenerateToken(user.UserName!, role);
 
@@ -105,7 +105,7 @@ public class AuthenticationService : IAuthenticationService
             _logger.LogInformation("Paciente autoregistrado: {Email}", request.Email);
         }
 
-        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault();
+        var role = (await _userManager.GetRolesAsync(user)).FirstOrDefault()?.ToUpper();
         var token = _jwtService.GenerateToken(user.UserName!, role);
 
         return new LoginPatientModel.Response(token, role);

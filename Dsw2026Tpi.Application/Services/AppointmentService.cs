@@ -22,8 +22,10 @@ public class AppointmentService : IAppointmentService
 
     public async Task<AppointmentModel.Response> BookAppointment(AppointmentModel.Request request)
     {
-        if (string.IsNullOrWhiteSpace(request.Patient.Dni) ||
-            request.Patient.Dni.Length < 7 || request.Patient.Dni.Length > 10)
+        var dni = request.Patient.Dni.ToString();
+
+        if (string.IsNullOrWhiteSpace(dni) ||
+            dni.Length < 7 || dni.Length > 10)
             throw new ValidationException(ErrorCodes.APPOINTMENT_INVALID_DNI, nameof(ErrorCodes.APPOINTMENT_INVALID_DNI));
 
         if (string.IsNullOrWhiteSpace(request.Reason) || request.Reason.Length < 5)
@@ -32,7 +34,7 @@ public class AppointmentService : IAppointmentService
         var doctor = await _persistence.GetById<Doctor>(request.DoctorId, nameof(Doctor.Specialty)) ?? 
             throw new EntityNotFoundException(nameof(Doctor));
 
-        var patient = await _persistence.First<Patient>(p => p.Dni == request.Patient.Dni) ?? 
+        var patient = await _persistence.First<Patient>(p => p.Dni == dni) ?? 
             throw new EntityNotFoundException(nameof(Patient));
 
         if (request.AvailabilitySlotId == Guid.Empty)
