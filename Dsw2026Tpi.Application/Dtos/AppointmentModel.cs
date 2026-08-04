@@ -3,7 +3,7 @@
 public record AppointmentModel
 {
     public record Request(Guid DoctorId, Guid AvailabilitySlotId, PatientDto Patient, string Reason);
-    public record PatientDto(string Dni);
+    public record PatientDto(long Dni);
     public record Response(Guid Id, string DoctorName, string Specialty, DateOnly Date, TimeOnly Time, string Status);
 
 
