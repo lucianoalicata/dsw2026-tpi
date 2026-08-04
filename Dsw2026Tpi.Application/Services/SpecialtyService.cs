@@ -16,6 +16,9 @@ public class SpecialtyService : ISpecialtyService
     }
     public async Task<Pagination<SpecialtyModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
     {
+        if (!string.IsNullOrWhiteSpace(name) && (name.Length < 3 || name.Length > 100))
+            throw new ValidationException(ErrorCodes.SPECIALTY_INVALID_NAME, nameof(ErrorCodes.SPECIALTY_INVALID_NAME));
+
         var specialties = await _persistence.Paginate<Specialty, string>(pageSize, pageIndex,
             s => !s.Deleted && (string.IsNullOrWhiteSpace(name) || s.Name.Contains(name)), s => s.Name);
 

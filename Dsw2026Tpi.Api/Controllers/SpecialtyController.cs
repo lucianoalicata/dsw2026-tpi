@@ -16,7 +16,7 @@ public class SpecialtyController : AppController
     }
 
     [HttpGet]
-    [Authorize(Roles = "Administrador,Paciente")]
+    [Authorize(Roles = "ADMINISTRADOR,PACIENTE")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public async Task<IActionResult> GetAll([FromQuery] int pageSize= 10, [FromQuery] int pageIndex= 1, [FromQuery] string? name = null)
     {
