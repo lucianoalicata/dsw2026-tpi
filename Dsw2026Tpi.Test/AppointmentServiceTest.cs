@@ -25,7 +25,7 @@ namespace Dsw2026Tpi.Test
             var request = new Request(
                 Guid.NewGuid(), 
                 Guid.NewGuid(), 
-                new PatientDto("456"), 
+                new PatientDto(456), 
                 "consulta anual");
 
             //act y assert
