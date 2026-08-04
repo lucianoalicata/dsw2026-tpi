@@ -18,6 +18,9 @@ public class DoctorService : IDoctorService
 
     public async Task<Pagination<DoctorModel.Response>> GetAll(int pageSize, int pageIndex, string? name = null)
     {
+        if (!string.IsNullOrWhiteSpace(name) && (name.Length < 3 || name.Length > 100))
+            throw new ValidationException(ErrorCodes.DOCTOR_INVALID_NAME, nameof(ErrorCodes.DOCTOR_INVALID_NAME));
+
         var doctors = await _persistence.Paginate<Doctor, string>(
             pageSize,
             pageIndex,
