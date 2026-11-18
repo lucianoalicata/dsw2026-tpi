@@ -27,6 +27,7 @@ Instrucciones:
 | Nombre y Apellido                 | Legajo | Email                      |
 | --------------------------------- | ------ | -------------------------- |
 | Alarcón Trevisani, Lucas Leonardo | 62478  | lucasalarcon1995@gmail.com |
+| Alicata, Luciano Antonio			| 60253	 | lucianoaalicata@gmail.com  |
 | Tenreyro, Juan Eduardo            | 60850  | tenreyrojuan1@gmail.com    |
 | Valdecantos, Joaquín              | 60326  | joacovaldecantos@gmail.com |
 
